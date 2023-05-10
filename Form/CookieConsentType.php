@@ -69,22 +69,25 @@ class CookieConsentType extends AbstractType
             ]);
         }
 
-        if ($this->cookieConsentSimplified === false) {
-            $builder->add('save', SubmitType::class, ['label' => 'ch_cookie_consent.save', 'attr' => ['class' => 'btn ch-cookie-consent__btn']]);
-        } else {
-            $builder->add('use_only_functional_cookies', SubmitType::class, ['label' => 'ch_cookie_consent.use_only_functional_cookies', 'attr' => ['class' => 'btn ch-cookie-consent__btn']]);
-            $builder->add('use_all_cookies', SubmitType::class, ['label' => 'ch_cookie_consent.use_all_cookies', 'attr' => ['class' => 'btn ch-cookie-consent__btn ch-cookie-consent__btn--secondary']]);
+        $builder->add('save', SubmitType::class, ['label' => 'ch_cookie_consent.save', 'attr' => ['class' => 'btn ch-cookie-consent__btn']]);
+        $builder->add('use_only_functional_cookies', SubmitType::class, ['label' => 'ch_cookie_consent.use_only_functional_cookies', 'attr' => ['class' => 'btn ch-cookie-consent__btn']]);
+        $builder->add('use_all_cookies', SubmitType::class, ['label' => 'ch_cookie_consent.use_all_cookies', 'attr' => ['class' => 'btn ch-cookie-consent__btn ch-cookie-consent__btn--secondary']]);
 
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                $data = $event->getData();
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
 
-                foreach ($this->cookieCategories as $category) {
-                    $data[$category] = isset($data['use_all_cookies']) ? 'true' : 'false';
+            foreach ($this->cookieCategories as $category) {
+                if(isset($data['use_all_cookies'])) {
+                    $data[$category] = true;
                 }
+                if(isset($data['use_only_functional_cookies'])) {
+                    $data[$category] = false;
+                }
+            }
 
-                $event->setData($data);
-            });
-        }
+            $event->setData($data);
+        });
+
     }
 
     /**
