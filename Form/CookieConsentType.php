@@ -78,10 +78,10 @@ class CookieConsentType extends AbstractType
 
             foreach ($this->cookieCategories as $category) {
                 if(isset($data['use_all_cookies'])) {
-                    $data[$category] = true;
+                    $data[$category] = 'true';
                 }
                 if(isset($data['use_only_functional_cookies'])) {
-                    $data[$category] = false;
+                    $data[$category] = 'false';
                 }
             }
 
